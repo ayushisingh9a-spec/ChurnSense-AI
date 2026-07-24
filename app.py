@@ -450,7 +450,7 @@ st.markdown(
 
     **Backend:** Python
 
-    **Developed By:** Ayushi Singh
+    **Developed By:** Ayushi and Sakshi
 
     © 2026 All Rights Reserved
 
