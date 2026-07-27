@@ -4,7 +4,13 @@ import joblib
 import plotly.express as px
 import os
 
+<<<<<<< HEAD
 from backend.ml.predict import UniversalPredictor
+=======
+# ---------------------------------------------------
+# PAGE CONFIG
+# ---------------------------------------------------
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 
 st.set_page_config(
     page_title="ChurnSense AI",
@@ -12,6 +18,13 @@ st.set_page_config(
     layout="wide"
 )
 
+<<<<<<< HEAD
+=======
+# ---------------------------------------------------
+# CSS
+# ---------------------------------------------------
+
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 st.markdown("""
 <style>
 
@@ -48,6 +61,13 @@ div[data-testid="metric-container"]{
 </style>
 """, unsafe_allow_html=True)
 
+<<<<<<< HEAD
+=======
+# ---------------------------------------------------
+# SIDEBAR
+# ---------------------------------------------------
+
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 st.sidebar.title("🤖 ChurnSense AI")
 
 st.sidebar.markdown("---")
@@ -79,20 +99,52 @@ st.sidebar.markdown("---")
 
 st.sidebar.success("Model Loaded Successfully")
 
+<<<<<<< HEAD
 st.title("📊 Customer Churn Prediction Dashboard")
 
 st.write("""
 Upload any compatible customer dataset
 (CSV or Excel) and predict churn.
+=======
+# ---------------------------------------------------
+# TITLE
+# ---------------------------------------------------
+
+st.title("📊 Customer Churn Prediction Dashboard")
+
+st.write("""
+Upload a telecom customer dataset and predict
+which customers are likely to leave the company.
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 """)
 
 st.markdown("---")
 
+<<<<<<< HEAD
 predictor = UniversalPredictor()
 
 uploaded_file = st.file_uploader(
     "📂 Upload CSV or Excel",
     type=["csv","xlsx"]
+=======
+# ---------------------------------------------------
+# LOAD MODEL
+# ---------------------------------------------------
+
+model = joblib.load("model/churn_model.pkl")
+
+feature_columns = joblib.load(
+    "model/feature_columns.pkl"
+)
+
+# ---------------------------------------------------
+# FILE UPLOAD
+# ---------------------------------------------------
+
+uploaded_file = st.file_uploader(
+    "📂 Upload Excel or CSV File",
+    type=["xlsx","csv"]
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 )
 
 if uploaded_file is not None:
@@ -111,7 +163,11 @@ if uploaded_file is not None:
 
     st.markdown("---")
 
+<<<<<<< HEAD
     col1,col2=st.columns(2)
+=======
+    col1,col2 = st.columns(2)
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 
     col1.metric(
         "Rows",
@@ -127,6 +183,7 @@ if uploaded_file is not None:
 
     if st.button("🚀 Predict Churn"):
 
+<<<<<<< HEAD
         results = predictor.predict_dataframe(
             df.copy()
         )
@@ -156,6 +213,64 @@ if uploaded_file is not None:
         total = len(results)
         churn = (results["Prediction"] == "Yes").sum()
         safe = (results["Prediction"] == "No").sum()
+=======
+        data = df.copy()
+
+        id_columns=[
+            "customerID",
+            "CustomerID",
+            "Customer_Id",
+            "CustID",
+            "Cust_ID",
+            "ID"
+        ]
+
+        for col in id_columns:
+            if col in data.columns:
+                data.drop(
+                    columns=[col],
+                    inplace=True
+                )
+
+        if "Churn" in data.columns:
+            data.drop(
+                columns=["Churn"],
+                inplace=True
+            )
+
+        for col in data.select_dtypes(
+            include=["object"]
+        ).columns:
+
+            data[col]=(
+                data[col]
+                .astype("category")
+                .cat.codes
+            )
+
+        for col in feature_columns:
+
+            if col not in data.columns:
+                data[col]=0
+
+        data=data[feature_columns]
+
+        predictions=model.predict(data)
+
+        df["Prediction"]=[
+            "Yes" if i==1 else "No"
+            for i in predictions
+        ]
+        st.success("✅ Prediction Completed Successfully!")
+
+        # ==========================================
+        # DASHBOARD METRICS
+        # ==========================================
+
+        total = len(df)
+        churn = (df["Prediction"] == "Yes").sum()
+        safe = (df["Prediction"] == "No").sum()
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 
         st.markdown("## 📈 Dashboard")
 
@@ -178,8 +293,17 @@ if uploaded_file is not None:
 
         st.markdown("---")
 
+<<<<<<< HEAD
         summary = (
             results["Prediction"]
+=======
+        # ==========================================
+        # PREDICTION SUMMARY
+        # ==========================================
+
+        summary = (
+            df["Prediction"]
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
             .value_counts()
             .reset_index()
         )
@@ -228,12 +352,24 @@ if uploaded_file is not None:
 
         st.markdown("---")
 
+<<<<<<< HEAD
         if "MonthlyCharges" in results.columns:
+=======
+        # ==========================================
+        # MONTHLY CHARGES CHART
+        # ==========================================
+
+        if "MonthlyCharges" in df.columns:
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 
             st.subheader("💰 Monthly Charges")
 
             fig3 = px.histogram(
+<<<<<<< HEAD
                 results,
+=======
+                df,
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
                 x="MonthlyCharges",
                 color="Prediction",
                 nbins=20,
@@ -245,12 +381,24 @@ if uploaded_file is not None:
                 use_container_width=True
             )
 
+<<<<<<< HEAD
         if "Contract" in results.columns:
+=======
+        # ==========================================
+        # CONTRACT DISTRIBUTION
+        # ==========================================
+
+        if "Contract" in df.columns:
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 
             st.subheader("📄 Contract Types")
 
             contract = (
+<<<<<<< HEAD
                 results["Contract"]
+=======
+                df["Contract"]
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
                 .value_counts()
                 .reset_index()
             )
@@ -274,11 +422,20 @@ if uploaded_file is not None:
             )
 
         st.markdown("---")
+<<<<<<< HEAD
+=======
+
+        # ==========================================
+        # SUMMARY TABLE
+        # ==========================================
+
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
         st.subheader("📋 Prediction Summary")
 
         st.table(summary)
 
         st.markdown("---")
+<<<<<<< HEAD
 
         st.subheader("📑 Prediction Results")
 
@@ -290,12 +447,37 @@ if uploaded_file is not None:
 
         st.dataframe(
             results,
+=======
+                # ==========================================
+        # PREDICTION RESULTS
+        # ==========================================
+
+        st.subheader("📑 Prediction Results")
+
+        # Add prediction confidence if supported
+        try:
+            probabilities = model.predict_proba(data)
+
+            confidence = [
+                round(max(prob) * 100, 2)
+                for prob in probabilities
+            ]
+
+            df["Confidence (%)"] = confidence
+
+        except:
+            pass
+
+        st.dataframe(
+            df,
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
             use_container_width=True,
             height=500
         )
 
         st.markdown("---")
 
+<<<<<<< HEAD
         st.subheader("📌 Insights")
 
         churn_percentage = round(
@@ -307,6 +489,17 @@ if uploaded_file is not None:
             (safe / total) * 100,
             2
         )
+=======
+        # ==========================================
+        # CUSTOMER INSIGHTS
+        # ==========================================
+
+        st.subheader("📌 Insights")
+
+        churn_percentage = round((churn / total) * 100, 2)
+
+        safe_percentage = round((safe / total) * 100, 2)
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 
         insight1, insight2 = st.columns(2)
 
@@ -336,9 +529,17 @@ if uploaded_file is not None:
 
         st.markdown("---")
 
+<<<<<<< HEAD
         csv = results.to_csv(
             index=False
         ).encode("utf-8")
+=======
+        # ==========================================
+        # DOWNLOAD RESULTS
+        # ==========================================
+
+        csv = df.to_csv(index=False).encode("utf-8")
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 
         st.download_button(
             label="📥 Download Prediction Report",
@@ -347,7 +548,15 @@ if uploaded_file is not None:
             mime="text/csv"
         )
 
+<<<<<<< HEAD
        # st.balloons()
+=======
+        st.balloons()
+
+# ==========================================
+# FOOTER
+# ==========================================
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 
 st.markdown("---")
 
@@ -357,7 +566,11 @@ st.markdown(
 
     ### 🤖 ChurnSense AI
 
+<<<<<<< HEAD
     Universal Customer Churn Prediction
+=======
+    Customer Churn Prediction using Machine Learning
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 
     **Algorithm:** Random Forest Classifier
 
@@ -365,9 +578,15 @@ st.markdown(
 
     **Backend:** Python
 
+<<<<<<< HEAD
     **Version:** Universal AI Edition
 
     ©️ 2026 All Rights Reserved
+=======
+    **Developed By:** Ayushi and Sakshi
+
+    © 2026 All Rights Reserved
+>>>>>>> 25fa3d2c570c6df5642b2877f7ddaaceeba2f85c
 
     </center>
     """,
